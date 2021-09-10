@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 
 import { logged } from './Function/global.js'
 import Login from './login/login'
+import IndexLogged from './messagerie/index'
 
 
 class CheckLogin extends Component {
@@ -28,8 +29,13 @@ class CheckLogin extends Component {
     this.setState({logged: true})
   }
 
+  deconnexion() {
+    localStorage.removeItem('account')
+    return this.setState({logged: false})
+  }
+
   checkLogged() {
-    if (this.state.logged) return <h1>Connecté</h1>
+    if (this.state.logged) return <IndexLogged deconnexion={() => this.deconnexion()} />
     return <Login connexion={(token) => !this.state.logged ? this.loginAcc(token) : null} />
   }
 

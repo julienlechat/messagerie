@@ -16,12 +16,15 @@ class Login extends Component {
 
     fnSubmit = (e) => {
         e.preventDefault();
-        var { user, password } = this.state
-        FnLogin(user, password)
-            .then((res) => this.props.connexion(res.token))
-            .catch((e) => {
-                if (e.response) return console.log(e.response.data)
-                console.log(e)})
+        try {
+            var { user, password } = this.state
+            FnLogin(user, password)
+                .then((res) => this.props.connexion(res.token))
+                .catch((e) => {
+                    if (e.response) return console.log(e.response.data)
+                    console.log(e)})
+        } catch(e) { console.log(e) }
+        
     }
 
     render() {

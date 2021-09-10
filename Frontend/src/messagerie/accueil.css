@@ -1,0 +1,6 @@
+.accueil {
+    max-height: 78vh;
+}
+.scrollarea {
+    overflow-y: auto;
+}

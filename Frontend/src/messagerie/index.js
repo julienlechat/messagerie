@@ -9,13 +9,16 @@ import {
 // Composants
 import Accueil from './accueil'
 import Create from './create'
+import AllConvers from './allconvers'
+import Conversation from './conversation'
 
 class Index extends Component {
     constructor(props) {
         super(props)
+        this.state = {idPage: 0}
     }
 
-    render() { 
+    render() {
         return (
             <Router>
                 <main className="container">
@@ -41,11 +44,10 @@ class Index extends Component {
                     <Routes>
                         <Route path="/" element={<Accueil />} />
                         <Route path="/create" element={<Create />} />
-                        <Route path="/conversaiton_:id" element={<h1>test3</h1>} />
-                        <Route path="/all" element={<h1>test4</h1>} />
+                        <Route path="/conversation_:id" element={<Conversation id={this.state.idPage} status={false} reloadList={false} changeId={(id) => {this.setState({idPage: id})}} />} />
+                        <Route path="/all" element={<AllConvers />} />
                         <Route path="*" element={<Accueil />} />
                     </Routes>
-
                 </main>
             </Router>
             )

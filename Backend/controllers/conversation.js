@@ -6,7 +6,7 @@ require('moment/locale/fr');
 /*
     Affiche la liste des conversations ouvertes
 */
-exports.list = async (req, res) => {
+exports.list = async (_, res) => {
     try {
         const sql = mysql.format(`SELECT c.id, u.login
                                   from conversations c
@@ -20,19 +20,43 @@ exports.list = async (req, res) => {
 }
 
 /*
+    Affiche toute les conversations
+*/
+exports.loadAllConvers = async (_, res) => {
+    try {
+        const sql = mysql.format(`SELECT c.id, u.login
+                                  from conversations c
+                                  INNER JOIN users u on c.user = u.id
+                                  ORDER BY id DESC`)
+        const list = await db.query(sql)
+
+        res.status(200).json(list[0])
+    } catch(e) { res.status(500).json(e) }
+}
+
+/*
     Affiche les messages d'une conversation à l'aide de son Id
 */
 exports.loadConversation = async (req, res) => {
     try {
         const { id } = req.params
-        const sql = mysql.format(`SELECT uc.login AS creator, c.status, u.login, m.msg
+        const { status } = req.body
+
+        if (status) {
+            const sql = mysql.format(`SELECT status FROM conversations WHERE id= ?`,[id])
+            const statusSql = await db.query(sql)
+            if (statusSql[0][0].status === 0) throw 'conversation fermé'
+        }
+
+        const sql2 = mysql.format(`SELECT uc.login AS creator, c.status, u.login, m.msg
                                   FROM messages m
                                   INNER JOIN conversations c on c.id = m.conversation
                                   INNER JOIN users u on u.id = m.user
                                   INNER JOIN users uc on uc.id = c.user
                                   WHERE m.conversation = ?
                                   ORDER BY m.date`, [id])
-        const list = await db.query(sql)
+        const list = await db.query(sql2)
+
         res.status(200).json(list[0])
 
     } catch(e) { res.status(500).json(e) }
@@ -60,6 +84,26 @@ exports.addMsg = async (req, res) => {
 
         if (addMsg[0].affectedRows !== 1) throw 'error'
         res.status(201).json('ok')
+
+    } catch(e) { res.status(500).json(e) }
+}
+
+/*
+    Cloture une conversation
+*/
+exports.close = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const sql = mysql.format(`SELECT * from conversations WHERE id = ?`, [id])
+        const conversationExist = await db.query(sql)
+        if (conversationExist[0].length === 0) throw 'conversation inexistante'
+
+        const sql2 = mysql.format(`UPDATE conversations SET status=0 WHERE id = ?`, [id])
+        const closeConv = await db.query(sql2)
+        if (closeConv[0].serverStatus !== 2) throw 'error'
+        res.status(201).json('ok')
+
 
     } catch(e) { res.status(500).json(e) }
 }

@@ -9,7 +9,9 @@ const token = require('../middleware/token')
 
 route.post('/create', token.verify, conversation.create)
 route.post('/addMsg/:id', token.verify, conversation.addMsg)
+route.put('/close/:id', token.verify, conversation.close)
 route.get('/list', token.verify, conversation.list)
-route.get('/:id', token.verify, conversation.loadConversation)
+route.post('/:id', token.verify, conversation.loadConversation)
+route.get('/all', token.verify, conversation.loadAllConvers)
 
 module.exports = route

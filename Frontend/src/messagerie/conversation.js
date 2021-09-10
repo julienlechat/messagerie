@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
-import { loadConversation, addMsg } from '../Function/conversation'
+import { loadConversation, addMsg, closeConvers } from '../Function/conversation'
 
 class Conversation extends Component {
     constructor(props) {
         super(props);
-        this.state = {id: 0, messages: [], msg: ''}
+        this.state = {id: 0, messages: [], msg: '', pageid: 0}
         this.onUpdate = this.onUpdate.bind(this);
     }
 
     componentDidMount() {
+        const idLink = parseInt(window.location.href.split('_')[1])
+        if (!isNaN(idLink)) {
+            this.props.changeId(idLink)
+            this.setState({pageid: idLink})
+        }
         this.loadConvers()
+        this.setState({status: this.props.status})
     }
     componentDidUpdate() {
-        this.loadConvers()
+        if (this.props.id !== this.state.pageid) this.loadConvers()
     }
 
     onUpdate(e) {
@@ -36,13 +42,10 @@ class Conversation extends Component {
     // Envoie une requete afin d'avoir tout les messages de la conversation
     loadConvers(reload) {
         try {
-            if (reload) this.state.id = 0
+            if (reload) this.setState({id: 0})
             if (this.state.id !== this.props.id) {
-                loadConversation(this.props.id)
-                    .then((res) => {
-                        this.setState({id: this.props.id, messages: res})
-                        console.log(res)
-                    })
+                loadConversation(this.props.id, this.state.status)
+                    .then((res) => this.setState({id: this.props.id, messages: res}))
                     .catch((e) => console.log(e))
             }
         } catch(e) { console.log(e)}
@@ -51,7 +54,13 @@ class Conversation extends Component {
     // Ferme une conversatoin
     closeConversation() {
         try {
-
+            //Ici, je reload la conversation et j'éxecute un reload de la liste (parrent)
+            closeConvers(this.state.id)
+                .then(() => {
+                    this.loadConvers(true)
+                    this.props.reloadList()
+                })
+                .catch((e) => console.log(e))
         } catch(e) { console.log(e) }
     }
 
@@ -64,7 +73,7 @@ class Conversation extends Component {
                         <div style={{cursor: 'pointer'}} onClick={() => this.closeConversation()}>X</div>
                     </div>
                     {this.state.messages.map((value, key) => {
-                        return (<div>
+                        return (<div key={key}>
                             <div className="badge bg-primary text-wrap">{value.msg}</div>
                             <p className="text-muted fw-lighter ">Envoyé par {value.login}</p>
                         </div>)

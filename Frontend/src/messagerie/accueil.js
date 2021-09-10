@@ -16,15 +16,20 @@ class Accueil extends Component {
         this.state = { liste: [], clickedId: 0}
     }
     
-    // Reçois la liste des conversation et les stocke dans un tableau (this.state.liste)
+    
     componentDidMount() {
         try {
-            listeConversation()
-                .then((res) => this.setState({liste: res}))
-                .catch((e) => {
-                    if (e.response) return console.log(e.response.data)
-                    console.log(e)})
+            this.loadList()
         } catch(e) { console.log(e) }
+    }
+
+    // Reçois la liste des conversation et les stocke dans un tableau (this.state.liste)
+    loadList() {
+        listeConversation()
+            .then((res) => this.setState({liste: res}))
+            .catch((e) => {
+                if (e.response) return console.log(e.response.data)
+                console.log(e)})
     }
 
     render() {
@@ -46,7 +51,7 @@ class Accueil extends Component {
                     </div>
                 </div>
                 {/* Affiche la conversation à droite*/
-                this.state.clickedId > 0 ? <Conversation id={this.state.clickedId} /> : null
+                this.state.clickedId > 0 ? <Conversation id={this.state.clickedId} status={true} reloadList={() => {try {this.loadList()} catch(e) {console.log(e)}}}/> : null
                 }
 
             </div>

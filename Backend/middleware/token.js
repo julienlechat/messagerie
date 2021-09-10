@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken')
 
+/*
+    Intercepte le token, le vérifie et rend le contenu dans req.token
+*/
 exports.verify = (req, res, next) => {
     try {
         const token = req.headers.authorization.split(' ')[1]

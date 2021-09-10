@@ -3,10 +3,10 @@ import {
     BrowserRouter as Router,
     Routes,
     Route,
-    Link,
-    Navigate
+    Link
   } from "react-router-dom";
 
+// Composants
 import Accueil from './accueil'
 import Create from './create'
 
@@ -37,6 +37,7 @@ class Index extends Component {
                             </div>
                         </div>
                     </nav>
+                    {/*Définition des routes*/}
                     <Routes>
                         <Route path="/" element={<Accueil />} />
                         <Route path="/create" element={<Create />} />

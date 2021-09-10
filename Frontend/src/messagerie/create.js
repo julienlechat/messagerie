@@ -12,6 +12,7 @@ class Create extends Component {
         this.setState({msg: e.target.value})
     }
 
+    // Envoie une requete avec le message afin de créer la conversation
     fnSubmit = (e) => {
         e.preventDefault();
         try {

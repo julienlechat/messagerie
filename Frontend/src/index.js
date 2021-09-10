@@ -14,26 +14,26 @@ class CheckLogin extends Component {
     this.state = {logged: false, load: false}
   }
 
+  // Vérifie s'il y a un token en localstorage afin de déterminer si l'utilisateur est connecté ou non
   componentDidMount() {
     if (logged()) this.setState({logged: true})
     return this.setState({load: true})
   }
 
-  componentWillUnmount() {
-    if (this.timer) window.clearInterval(this.timer)
-  }
-
+  // Reçois un token et connecte l'utilisateur
   loginAcc(token) {
     if (!token) return
     localStorage.setItem('account', token)
     this.setState({logged: true})
   }
 
+  // Déconnecte l'utilisateur
   deconnexion() {
     localStorage.removeItem('account')
     return this.setState({logged: false})
   }
 
+  // Détermine le composant à afficher en fonction de son status (connecté/déconnecté)
   checkLogged() {
     if (this.state.logged) return <IndexLogged deconnexion={() => this.deconnexion()} />
     return <Login connexion={(token) => !this.state.logged ? this.loginAcc(token) : null} />

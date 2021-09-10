@@ -2,6 +2,9 @@ const mysql = require('mysql')
 const db = require('../mysql')
 const jwt = require('jsonwebtoken')
 
+/*
+    Connexion de l'utilisateur, vérifications des données, retourne un token contenant l'id et le nom de l'utilisateur
+*/
 exports.login = async (req, res) => {
     try {
         const { user, password } = req.body

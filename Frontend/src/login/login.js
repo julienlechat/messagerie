@@ -10,10 +10,12 @@ class Login extends Component {
         this.onUpdate = this.onUpdate.bind(this);
     }
 
+    // Modifie le state (user/password)
     onUpdate(e) {
         this.setState({[e.target.name]: e.target.value})
     }
 
+    // Envoie une requete de connexion -> Retourne un token
     fnSubmit = (e) => {
         e.preventDefault();
         try {

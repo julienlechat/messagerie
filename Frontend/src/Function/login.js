@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+/*
+    Requete connexion de l'utilisateur, retourne un token
+*/
 export function FnLogin(user, password) {
     return new Promise((resolve, reject) => {
         const path = '/api/auth/login'
